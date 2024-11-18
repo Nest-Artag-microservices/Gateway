@@ -10,9 +10,6 @@ export class ProductsController {
     @Inject(productsService)private readonly productsClient:ClientProxy
   ) {}
 
-
-
-
   @Post()
   create() {
     return 'This action adds a new product';
@@ -28,7 +25,7 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return 'This action returns a #${id} product';
+    return this.productsClient.send({ cmd:'findOne'},{id});
   }
   @Patch(':id')
   update(@Body() body:any) {
