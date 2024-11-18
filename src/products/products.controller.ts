@@ -1,5 +1,8 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Body, 
+  Controller, Delete, Get, Inject, 
+  Param, Patch, Post, Query } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common';
 import { productsService } from 'src/config';
 
@@ -11,8 +14,9 @@ export class ProductsController {
   ) {}
 
   @Post()
-  create() {
-    return 'This action adds a new product';
+  create(@Body() body:any //deberia ser de tipo product
+) {
+    return this.productsClient.send({ cmd:'create'},{body});
   }
 
   @Get()
@@ -24,16 +28,29 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsClient.send({ cmd:'findOne'},{id});
+ async findOne(@Param('id') id: string) {
+
+try{
+const product =await firstValueFrom(
+  this.productsClient.send({ cmd:'findOne'},{id})
+);
+
+return product
+
+}catch(error){
+  throw new RpcException(error)
+}
+
+
   }
   @Patch(':id')
-  update(@Body() body:any) {
-    return 'This action updates a #${id} product';
+  update(@Body() body:any //deberia ser de tipo product
+) {
+    return this.productsClient.send({ cmd:'update'},{body});
   }
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return 'This action removes a #${id} product';
+    return this.productsClient.send({ cmd:'remove'},{id});
   }
 
 
