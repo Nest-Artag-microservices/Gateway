@@ -5,6 +5,8 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common';
 import { productsService } from 'src/config';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 
 @Controller('products')
@@ -14,7 +16,7 @@ export class ProductsController {
   ) {}
 
   @Post()
-  create(@Body() body:any //deberia ser de tipo product
+  create(@Body() body:CreateProductDto 
 ) {
     return this.productsClient.send({ cmd:'create'},{body});
   }
@@ -44,7 +46,7 @@ return product
 
   }
   @Patch(':id')
-  update(@Body() body:any //deberia ser de tipo product
+  update(@Body() body:UpdateProductDto
 ) {
     return this.productsClient.send({ cmd:'update'},{body});
   }
