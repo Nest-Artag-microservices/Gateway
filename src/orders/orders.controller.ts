@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Inject, ParseUUIDPipe } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { orderService } from 'src/config';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 
 @Controller('orders')
@@ -21,8 +22,14 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordersClient.send('findOneOrder',id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    try{
+    const order =await firstValueFrom(
+    this.ordersClient.send('findOneOrder',id)
+    ); 
+    return order;
+    
+    }catch(error){}
   }
 
  
