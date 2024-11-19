@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Inject, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Inject, ParseUUIDPipe, Query, Patch } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { orderService } from 'src/config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
@@ -50,5 +50,18 @@ export class OrdersController {
       throw new RpcException(error)
     }
   }
- 
+ @Patch(':id')
+  changeStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() statusDto: StatusDto
+  ){
+try{
+return this.ordersClient.send('changeOrderStatus', {
+  id,
+  status: statusDto.status
+})
+}catch(error){
+  throw new RpcException(error)
+}
+  }
 }
