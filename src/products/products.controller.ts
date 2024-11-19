@@ -32,8 +32,8 @@ export class ProductsController {
     return this.productsClient.send({ cmd:'findAll'},paginationDto);
   }
 
-  @Get(':id')
- async findOne(@Param('id') id: string) {
+@Get(':id')
+async findOne(@Param('id') id: string) {
 
 try{
 const product =await firstValueFrom(
@@ -45,10 +45,10 @@ return product
 }catch(error){
   throw new RpcException(error)
 }
+}
 
 
-  }
-  @Patch(':id')
+
   @Patch(':id')
   patchProduct(
     @Param('id', ParseIntPipe) id: number,
