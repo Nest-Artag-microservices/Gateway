@@ -46,9 +46,6 @@ return product
   throw new RpcException(error)
 }
 }
-
-
-
   @Patch(':id')
   patchProduct(
     @Param('id', ParseIntPipe) id: number,
