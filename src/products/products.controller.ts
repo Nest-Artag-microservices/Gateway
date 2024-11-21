@@ -4,7 +4,7 @@ import { Body,
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError,firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common';
-import { productsService } from 'src/config';
+import { NATS_SERVICE,} from 'src/config';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -13,12 +13,12 @@ import { UpdateProductDto } from './dto/update-product.dto';
 @Controller('products')
 export class ProductsController {
   constructor(
-    @Inject(productsService)private readonly productsClient:ClientProxy
+    @Inject(NATS_SERVICE)private readonly client:ClientProxy
   ) {}
 
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto) {
-    return this.productsClient.send(
+    return this.client.send(
       { cmd: 'create_product' },
       createProductDto,
     );
@@ -29,7 +29,7 @@ export class ProductsController {
     @Query()
     paginationDto:PaginationDto
   ) {
-    return this.productsClient.send({ cmd:'findAll'},paginationDto);
+    return this.client.send({ cmd:'findAll'},paginationDto);
   }
 
 @Get(':id')
@@ -37,7 +37,7 @@ async findOne(@Param('id') id: string) {
 
 try{
 const product =await firstValueFrom(
-  this.productsClient.send({ cmd:'findOne'},{id})
+  this.client.send({ cmd:'findOne'},{id})
 );
 
 return product
@@ -52,7 +52,7 @@ return product
     @Body() updateProductDto: UpdateProductDto,
   ) {
     
-    return this.productsClient
+    return this.client
       .send(
         { cmd: 'update_product' },
         {
@@ -68,7 +68,7 @@ return product
   }
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.productsClient.send({ cmd:'remove'},{id});
+    return this.client.send({ cmd:'remove'},{id});
   }
 
 
