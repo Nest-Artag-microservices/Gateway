@@ -43,7 +43,7 @@ export class OrdersController {
 
     } catch (error) {
       throw new RpcException(error);
-    }
+    }  
   }
   @Get("status/:status")
   async findAllByStatus(
